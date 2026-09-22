@@ -1,8 +1,10 @@
 package com.loanmanagement.controller;
 
-import com.loanmanagement.dao.CustomerDao;
-import com.loanmanagement.dao.impl.CustomerDaoImpl;
-import com.loanmanagement.model.Customer;
+import com.loanmanagement.model.Loan;
+import com.loanmanagement.service.CustomerService;
+import com.loanmanagement.service.impl.CustomerServiceImpl;
+import com.loanmanagement.service.LoanService;
+import com.loanmanagement.service.impl.LoanServiceImpl;
 import com.loanmanagement.util.DBConnection;
 
 import java.sql.Connection;
@@ -11,7 +13,7 @@ public class AppController {
 
     public static void main(String[] args) {
 
-        // Test database connection
+        // Testing database connection
         Connection connection = DBConnection.getConnection();
 
         if (connection != null) {
@@ -21,34 +23,30 @@ public class AppController {
             return;
         }
 
-        // Create Customer DAO object
-        CustomerDao customerDao = new CustomerDaoImpl();
+        // Creating Customer Service object
+        CustomerService customerService = new CustomerServiceImpl();
 
-        // Create Customer object
-        Customer customer = new Customer();
+        // Creating Loan Service object
+        LoanService loanService = new LoanServiceImpl();
 
-        customer.setUserId(1);
-        customer.setFullName("Abhi Vinitha");
-        customer.setEmail("abhivinitha@gmail.com");
-        customer.setPhone("9876543210");
-        customer.setDob("2004-05-15");
-        customer.setAddress("Hyderabad");
-        customer.setMonthlyIncome(50000);
-        customer.setPanNumber("ABCDE1234F");
-        customer.setAadhaarLast4("1234");
-        customer.setEmploymentType("SALARIED");
-        customer.setAccountNumber("1234567890");
-        customer.setIfscCode("SBIN0001234");
-        customer.setBankName("SBI");
-        customer.setKycStatus("PENDING");
-        customer.setKycRemarks("Documents submitted");
-        customer.setKycVerifiedBy(0);
-        customer.setKycVerifiedAt(null);
-        customer.setCreditScore(750);
-        customer.setExistingEmi(5000);
-        customer.setStatus("ACTIVE");
+        // Creating Loan object
+        Loan loan = new Loan();
 
-        // Add customer
-        customerDao.addCustomer(customer);
+        loan.setApplicationId(1);
+        loan.setCustomerId(7);
+        loan.setLoanTypeId(1);
+        loan.setPrincipalAmount(100000);
+        loan.setInterestRate(10.5);
+        loan.setTenureMonths(24);
+        loan.setTotalPayable(121000);
+        loan.setOutstandingAmount(121000);
+        loan.setStartDate("2026-09-22");
+        loan.setStatus("ACTIVE");
+        loan.setCreatedBy(1);
+
+        // Add Loan
+        loanService.addLoan(loan);
+
+        System.out.println("Loan add completed!");
     }
 }
