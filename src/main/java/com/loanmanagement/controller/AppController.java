@@ -1,8 +1,6 @@
 package com.loanmanagement.controller;
 
 import com.loanmanagement.model.Loan;
-import com.loanmanagement.service.CustomerService;
-import com.loanmanagement.service.impl.CustomerServiceImpl;
 import com.loanmanagement.service.LoanService;
 import com.loanmanagement.service.impl.LoanServiceImpl;
 import com.loanmanagement.util.DBConnection;
@@ -23,30 +21,27 @@ public class AppController {
             return;
         }
 
-        // Creating Customer Service object
-        CustomerService customerService = new CustomerServiceImpl();
-
         // Creating Loan Service object
         LoanService loanService = new LoanServiceImpl();
 
-        // Creating Loan object
-        Loan loan = new Loan();
+        // Get existing loan
+        Loan loan = loanService.getLoanById(1);
 
-        loan.setApplicationId(1);
-        loan.setCustomerId(7);
-        loan.setLoanTypeId(1);
-        loan.setPrincipalAmount(100000);
-        loan.setInterestRate(10.5);
-        loan.setTenureMonths(24);
-        loan.setTotalPayable(121000);
-        loan.setOutstandingAmount(121000);
-        loan.setStartDate("2026-09-22");
-        loan.setStatus("ACTIVE");
-        loan.setCreatedBy(1);
+        if (loan != null) {
 
-        // Add Loan
-        loanService.addLoan(loan);
+            System.out.println("Loan fetched successfully!");
 
-        System.out.println("Loan add completed!");
+            // Update loan details
+            loan.setPrincipalAmount(120000);
+            loan.setInterestRate(11.0);
+            loan.setTenureMonths(24);
+
+            loanService.updateLoan(loan);
+
+            System.out.println("Loan update completed!");
+
+        } else {
+            System.out.println("Loan not found!");
+        }
     }
 }
