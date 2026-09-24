@@ -4,16 +4,19 @@ import com.loanmanagement.model.Loan;
 import com.loanmanagement.model.LoanApplication;
 import com.loanmanagement.model.LoanType;
 import com.loanmanagement.model.Repayment;
+import com.loanmanagement.model.User;
 
 import com.loanmanagement.service.ApplicationService;
 import com.loanmanagement.service.LoanService;
 import com.loanmanagement.service.LoanTypeService;
 import com.loanmanagement.service.RepaymentService;
+import com.loanmanagement.service.UserService;
 
 import com.loanmanagement.service.impl.ApplicationServiceImpl;
 import com.loanmanagement.service.impl.LoanServiceImpl;
 import com.loanmanagement.service.impl.LoanTypeServiceImpl;
 import com.loanmanagement.service.impl.RepaymentServiceImpl;
+import com.loanmanagement.service.impl.UserServiceImpl;
 
 import com.loanmanagement.util.DBConnection;
 
@@ -123,6 +126,29 @@ public class AppController {
 
         } else {
             System.out.println("Repayment not found!");
+        }
+
+        // Creating User Service object
+        UserService userService =
+                new UserServiceImpl();
+
+        // Get existing user
+        User user =
+                userService.getUserById(1);
+
+        if (user != null) {
+
+            System.out.println("User fetched successfully!");
+
+            // Update user status
+            user.setStatus("ACTIVE");
+
+            userService.updateUser(user);
+
+            System.out.println("User update completed!");
+
+        } else {
+            System.out.println("User not found!");
         }
     }
 }
