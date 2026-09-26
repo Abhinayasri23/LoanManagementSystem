@@ -3,19 +3,16 @@ package com.loanmanagement.controller;
 import com.loanmanagement.model.Loan;
 import com.loanmanagement.model.LoanApplication;
 import com.loanmanagement.model.LoanType;
-import com.loanmanagement.model.Repayment;
 import com.loanmanagement.model.User;
 
 import com.loanmanagement.service.ApplicationService;
 import com.loanmanagement.service.LoanService;
 import com.loanmanagement.service.LoanTypeService;
-import com.loanmanagement.service.RepaymentService;
 import com.loanmanagement.service.UserService;
 
 import com.loanmanagement.service.impl.ApplicationServiceImpl;
 import com.loanmanagement.service.impl.LoanServiceImpl;
 import com.loanmanagement.service.impl.LoanTypeServiceImpl;
-import com.loanmanagement.service.impl.RepaymentServiceImpl;
 import com.loanmanagement.service.impl.UserServiceImpl;
 
 import com.loanmanagement.util.DBConnection;
@@ -109,29 +106,6 @@ public class AppController {
 
         } else {
             logger.warn("Loan type not found!");
-        }
-
-        // Creating Repayment Service object
-        RepaymentService repaymentService =
-                new RepaymentServiceImpl();
-
-        // Get existing repayment
-        Repayment repayment =
-                repaymentService.getRepaymentById(1);
-
-        if (repayment != null) {
-
-            logger.info("Repayment fetched successfully!");
-
-            // Update repayment remarks
-            repayment.setRemarks("Updated repayment");
-
-            repaymentService.updateRepayment(repayment);
-
-            logger.info("Repayment update completed!");
-
-        } else {
-            logger.warn("Repayment not found!");
         }
 
         // Creating User Service object

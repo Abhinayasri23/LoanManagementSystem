@@ -17,17 +17,35 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
     private static final Logger logger =
             LoggerFactory.getLogger(LoanApplicationDaoImpl.class);
 
+    // SQL QUERIES
+    private static final String ADD_LOAN_APPLICATION_SQL =
+            "INSERT INTO loan_applications " +
+                    "(customer_id, loan_type_id, requested_amount, tenure_months, " +
+                    "purpose, status, remarks, reviewed_by, applied_at, reviewed_at) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String GET_LOAN_APPLICATION_BY_ID_SQL =
+            "SELECT * FROM loan_applications WHERE application_id = ?";
+
+    private static final String UPDATE_LOAN_APPLICATION_SQL =
+            "UPDATE loan_applications SET " +
+                    "customer_id = ?, loan_type_id = ?, requested_amount = ?, " +
+                    "tenure_months = ?, purpose = ?, status = ?, remarks = ? " +
+                    "WHERE application_id = ?";
+
+    private static final String DELETE_LOAN_APPLICATION_SQL =
+            "DELETE FROM loan_applications WHERE application_id = ?";
+
+
     @Override
     public void addLoanApplication(LoanApplication application) {
 
-        String sql = "INSERT INTO loan_applications " +
-                "(customer_id, loan_type_id, requested_amount, tenure_months, " +
-                "purpose, status, remarks, reviewed_by, applied_at, reviewed_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+
+            PreparedStatement statement =
+                    connection.prepareStatement(
+                            ADD_LOAN_APPLICATION_SQL);
 
             statement.setInt(1, application.getCustomerId());
             statement.setInt(2, application.getLoanTypeId());
@@ -58,14 +76,16 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
         }
     }
 
+
     @Override
     public LoanApplication getLoanApplicationById(int applicationId) {
 
-        String sql = "SELECT * FROM loan_applications WHERE application_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+
+            PreparedStatement statement =
+                    connection.prepareStatement(
+                            GET_LOAN_APPLICATION_BY_ID_SQL);
 
             statement.setInt(1, applicationId);
 
@@ -131,17 +151,16 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
         return null;
     }
 
+
     @Override
     public void updateLoanApplication(LoanApplication application) {
 
-        String sql = "UPDATE loan_applications SET " +
-                "customer_id = ?, loan_type_id = ?, requested_amount = ?, " +
-                "tenure_months = ?, purpose = ?, status = ?, remarks = ? " +
-                "WHERE application_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+
+            PreparedStatement statement =
+                    connection.prepareStatement(
+                            UPDATE_LOAN_APPLICATION_SQL);
 
             statement.setInt(1, application.getCustomerId());
             statement.setInt(2, application.getLoanTypeId());
@@ -165,14 +184,16 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
         }
     }
 
+
     @Override
     public void deleteLoanApplication(int applicationId) {
 
-        String sql = "DELETE FROM loan_applications WHERE application_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+
+            PreparedStatement statement =
+                    connection.prepareStatement(
+                            DELETE_LOAN_APPLICATION_SQL);
 
             statement.setInt(1, applicationId);
 

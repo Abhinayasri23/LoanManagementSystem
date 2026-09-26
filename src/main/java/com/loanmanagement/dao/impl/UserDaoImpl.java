@@ -17,16 +17,31 @@ public class UserDaoImpl implements UserDao {
     private static final Logger logger =
             LoggerFactory.getLogger(UserDaoImpl.class);
 
+    // SQL Queries
+    private static final String ADD_USER_SQL =
+            "INSERT INTO users " +
+                    "(username, password, role, status, created_at) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+
+    private static final String GET_USER_BY_ID_SQL =
+            "SELECT * FROM users WHERE user_id = ?";
+
+    private static final String UPDATE_USER_SQL =
+            "UPDATE users SET " +
+                    "username = ?, password = ?, role = ?, status = ? " +
+                    "WHERE user_id = ?";
+
+    private static final String DELETE_USER_SQL =
+            "DELETE FROM users WHERE user_id = ?";
+
+
     @Override
     public void addUser(User user) {
 
-        String sql = "INSERT INTO users " +
-                "(username, password, role, status, created_at) " +
-                "VALUES (?, ?, ?, ?, ?)";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(ADD_USER_SQL);
 
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getPassword());
@@ -49,11 +64,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserById(int userId) {
 
-        String sql = "SELECT * FROM users WHERE user_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(GET_USER_BY_ID_SQL);
 
             statement.setInt(1, userId);
 
@@ -95,13 +109,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updateUser(User user) {
 
-        String sql = "UPDATE users SET " +
-                "username = ?, password = ?, role = ?, status = ? " +
-                "WHERE user_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(UPDATE_USER_SQL);
 
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getPassword());
@@ -124,11 +135,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void deleteUser(int userId) {
 
-        String sql = "DELETE FROM users WHERE user_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(DELETE_USER_SQL);
 
             statement.setInt(1, userId);
 

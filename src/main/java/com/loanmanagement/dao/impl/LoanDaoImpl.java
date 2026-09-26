@@ -17,18 +17,36 @@ public class LoanDaoImpl implements LoanDao {
     private static final Logger logger =
             LoggerFactory.getLogger(LoanDaoImpl.class);
 
+    // SQL QUERIES
+    private static final String ADD_LOAN_SQL =
+            "INSERT INTO loans " +
+                    "(application_id, customer_id, loan_type_id, principal_amount, " +
+                    "interest_rate, tenure_months, total_payable, outstanding_amount, " +
+                    "start_date, status, created_by) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String GET_LOAN_BY_ID_SQL =
+            "SELECT * FROM loans WHERE loan_id = ?";
+
+    private static final String UPDATE_LOAN_SQL =
+            "UPDATE loans SET " +
+                    "application_id = ?, customer_id = ?, loan_type_id = ?, " +
+                    "principal_amount = ?, interest_rate = ?, tenure_months = ?, " +
+                    "total_payable = ?, outstanding_amount = ?, start_date = ?, " +
+                    "status = ?, created_by = ? " +
+                    "WHERE loan_id = ?";
+
+    private static final String DELETE_LOAN_SQL =
+            "DELETE FROM loans WHERE loan_id = ?";
+
+
     @Override
     public void addLoan(Loan loan) {
 
-        String sql = "INSERT INTO loans " +
-                "(application_id, customer_id, loan_type_id, principal_amount, " +
-                "interest_rate, tenure_months, total_payable, outstanding_amount, " +
-                "start_date, status, created_by) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(ADD_LOAN_SQL);
 
             statement.setInt(1, loan.getApplicationId());
             statement.setInt(2, loan.getCustomerId());
@@ -54,14 +72,14 @@ public class LoanDaoImpl implements LoanDao {
         }
     }
 
+
     @Override
     public Loan getLoanById(int loanId) {
 
-        String sql = "SELECT * FROM loans WHERE loan_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(GET_LOAN_BY_ID_SQL);
 
             statement.setInt(1, loanId);
 
@@ -106,19 +124,14 @@ public class LoanDaoImpl implements LoanDao {
         return null;
     }
 
+
     @Override
     public void updateLoan(Loan loan) {
 
-        String sql = "UPDATE loans SET " +
-                "application_id = ?, customer_id = ?, loan_type_id = ?, " +
-                "principal_amount = ?, interest_rate = ?, tenure_months = ?, " +
-                "total_payable = ?, outstanding_amount = ?, start_date = ?, " +
-                "status = ?, created_by = ? " +
-                "WHERE loan_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(UPDATE_LOAN_SQL);
 
             statement.setInt(1, loan.getApplicationId());
             statement.setInt(2, loan.getCustomerId());
@@ -145,14 +158,14 @@ public class LoanDaoImpl implements LoanDao {
         }
     }
 
+
     @Override
     public void deleteLoan(int loanId) {
 
-        String sql = "DELETE FROM loans WHERE loan_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(DELETE_LOAN_SQL);
 
             statement.setInt(1, loanId);
 

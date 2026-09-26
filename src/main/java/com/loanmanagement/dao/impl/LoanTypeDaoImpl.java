@@ -17,16 +17,33 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
     private static final Logger logger =
             LoggerFactory.getLogger(LoanTypeDaoImpl.class);
 
+    // SQL Queries
+    private static final String ADD_LOAN_TYPE_SQL =
+            "INSERT INTO loan_types " +
+                    "(name, description, interest_rate, min_amount, max_amount, max_tenure_months, status) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String GET_LOAN_TYPE_BY_ID_SQL =
+            "SELECT * FROM loan_types WHERE loan_type_id = ?";
+
+    private static final String UPDATE_LOAN_TYPE_SQL =
+            "UPDATE loan_types SET " +
+                    "name = ?, description = ?, interest_rate = ?, " +
+                    "min_amount = ?, max_amount = ?, max_tenure_months = ?, " +
+                    "status = ? " +
+                    "WHERE loan_type_id = ?";
+
+    private static final String DELETE_LOAN_TYPE_SQL =
+            "DELETE FROM loan_types WHERE loan_type_id = ?";
+
+
     @Override
     public void addLoanType(LoanType loanType) {
 
-        String sql = "INSERT INTO loan_types " +
-                "(name, description, interest_rate, min_amount, max_amount, max_tenure_months, status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(ADD_LOAN_TYPE_SQL);
 
             statement.setString(1, loanType.getName());
             statement.setString(2, loanType.getDescription());
@@ -51,11 +68,10 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
     @Override
     public LoanType getLoanTypeById(int loanTypeId) {
 
-        String sql = "SELECT * FROM loan_types WHERE loan_type_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(GET_LOAN_TYPE_BY_ID_SQL);
 
             statement.setInt(1, loanTypeId);
 
@@ -99,15 +115,10 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
     @Override
     public void updateLoanType(LoanType loanType) {
 
-        String sql = "UPDATE loan_types SET " +
-                "name = ?, description = ?, interest_rate = ?, " +
-                "min_amount = ?, max_amount = ?, max_tenure_months = ?, " +
-                "status = ? " +
-                "WHERE loan_type_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(UPDATE_LOAN_TYPE_SQL);
 
             statement.setString(1, loanType.getName());
             statement.setString(2, loanType.getDescription());
@@ -133,11 +144,10 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
     @Override
     public void deleteLoanType(int loanTypeId) {
 
-        String sql = "DELETE FROM loan_types WHERE loan_type_id = ?";
-
         try {
             Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(DELETE_LOAN_TYPE_SQL);
 
             statement.setInt(1, loanTypeId);
 
