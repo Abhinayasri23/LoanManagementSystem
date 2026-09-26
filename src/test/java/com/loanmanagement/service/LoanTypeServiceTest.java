@@ -1,5 +1,6 @@
 package com.loanmanagement.service;
 
+import com.loanmanagement.exception.NotFoundException;
 import com.loanmanagement.model.LoanType;
 import com.loanmanagement.service.impl.LoanTypeServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LoanTypeServiceTest {
 
-    private LoanTypeService loanTypeService = new LoanTypeServiceImpl();
+    private LoanTypeService loanTypeService =
+            new LoanTypeServiceImpl();
 
     @Test
     void getLoanTypeByIdTest() {
@@ -23,10 +25,10 @@ public class LoanTypeServiceTest {
     @Test
     void getLoanTypeByIdNotFoundTest() {
 
-        LoanType loanType =
-                loanTypeService.getLoanTypeById(999);
-
-        assertNull(loanType);
+        assertThrows(
+                NotFoundException.class,
+                () -> loanTypeService.getLoanTypeById(999)
+        );
     }
 
     @Test
@@ -43,7 +45,9 @@ public class LoanTypeServiceTest {
                 loanTypeService.getLoanTypeById(1);
 
         assertNotNull(updatedLoanType);
-        assertEquals("Updated loan type",
-                updatedLoanType.getDescription());
+        assertEquals(
+                "Updated loan type",
+                updatedLoanType.getDescription()
+        );
     }
 }

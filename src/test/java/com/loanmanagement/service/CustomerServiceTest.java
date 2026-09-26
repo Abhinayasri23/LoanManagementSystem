@@ -1,5 +1,6 @@
 package com.loanmanagement.service;
 
+import com.loanmanagement.exception.NotFoundException;
 import com.loanmanagement.model.Customer;
 import com.loanmanagement.service.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -8,12 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerServiceTest {
 
-    private CustomerService customerService = new CustomerServiceImpl();
+    private CustomerService customerService =
+            new CustomerServiceImpl();
 
     @Test
     void getCustomerByIdTest() {
 
-        Customer customer = customerService.getCustomerById(7);
+        Customer customer =
+                customerService.getCustomerById(7);
 
         assertNotNull(customer);
         assertEquals(7, customer.getCustomerId());
@@ -22,13 +25,15 @@ public class CustomerServiceTest {
     @Test
     void updateCustomerTest() {
 
-        Customer customer = customerService.getCustomerById(7);
+        Customer customer =
+                customerService.getCustomerById(7);
 
         customer.setStatus("ACTIVE");
 
         customerService.updateCustomer(customer);
 
-        Customer updatedCustomer = customerService.getCustomerById(7);
+        Customer updatedCustomer =
+                customerService.getCustomerById(7);
 
         assertNotNull(updatedCustomer);
         assertEquals("ACTIVE", updatedCustomer.getStatus());
@@ -37,8 +42,9 @@ public class CustomerServiceTest {
     @Test
     void getCustomerByIdNotFoundTest() {
 
-        Customer customer = customerService.getCustomerById(999);
-
-        assertNull(customer);
+        assertThrows(
+                NotFoundException.class,
+                () -> customerService.getCustomerById(999)
+        );
     }
 }

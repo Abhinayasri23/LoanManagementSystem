@@ -1,5 +1,6 @@
 package com.loanmanagement.service;
 
+import com.loanmanagement.exception.NotFoundException;
 import com.loanmanagement.model.User;
 import com.loanmanagement.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -8,12 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
 
-    private UserService userService = new UserServiceImpl();
+    private UserService userService =
+            new UserServiceImpl();
 
     @Test
     void getUserByIdTest() {
 
-        User user = userService.getUserById(1);
+        User user =
+                userService.getUserById(1);
 
         assertNotNull(user);
         assertEquals(1, user.getUserId());
@@ -22,7 +25,8 @@ public class UserServiceTest {
     @Test
     void updateUserTest() {
 
-        User user = userService.getUserById(1);
+        User user =
+                userService.getUserById(1);
 
         assertNotNull(user);
 
@@ -30,16 +34,21 @@ public class UserServiceTest {
 
         userService.updateUser(user);
 
-        User updatedUser = userService.getUserById(1);
+        User updatedUser =
+                userService.getUserById(1);
 
-        assertEquals("ACTIVE", updatedUser.getStatus());
+        assertEquals(
+                "ACTIVE",
+                updatedUser.getStatus()
+        );
     }
 
     @Test
     void getUserByIdNotFoundTest() {
 
-        User user = userService.getUserById(999);
-
-        assertNull(user);
+        assertThrows(
+                NotFoundException.class,
+                () -> userService.getUserById(999)
+        );
     }
 }
