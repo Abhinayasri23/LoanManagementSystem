@@ -4,12 +4,18 @@ import com.loanmanagement.dao.UserDao;
 import com.loanmanagement.model.User;
 import com.loanmanagement.util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDaoImpl implements UserDao {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(UserDaoImpl.class);
 
     @Override
     public void addUser(User user) {
@@ -30,14 +36,13 @@ public class UserDaoImpl implements UserDao {
 
             statement.executeUpdate();
 
-            System.out.println("User added successfully!");
+            logger.info("User added successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while adding user.");
-            e.printStackTrace();
+            logger.error("Error while adding user.", e);
         }
     }
 
@@ -65,6 +70,8 @@ public class UserDaoImpl implements UserDao {
                 user.setStatus(resultSet.getString("status"));
                 user.setCreatedAt(resultSet.getString("created_at"));
 
+                logger.info("User fetched successfully!");
+
                 resultSet.close();
                 statement.close();
                 connection.close();
@@ -72,13 +79,14 @@ public class UserDaoImpl implements UserDao {
                 return user;
             }
 
+            logger.warn("User not found for ID: {}", userId);
+
             resultSet.close();
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while getting user.");
-            e.printStackTrace();
+            logger.error("Error while getting user.", e);
         }
 
         return null;
@@ -103,14 +111,13 @@ public class UserDaoImpl implements UserDao {
 
             statement.executeUpdate();
 
-            System.out.println("User updated successfully!");
+            logger.info("User updated successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while updating user.");
-            e.printStackTrace();
+            logger.error("Error while updating user.", e);
         }
     }
 
@@ -127,14 +134,13 @@ public class UserDaoImpl implements UserDao {
 
             statement.executeUpdate();
 
-            System.out.println("User deleted successfully!");
+            logger.info("User deleted successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while deleting user.");
-            e.printStackTrace();
+            logger.error("Error while deleting user.", e);
         }
     }
 }

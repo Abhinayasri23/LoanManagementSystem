@@ -4,12 +4,18 @@ import com.loanmanagement.dao.RepaymentDao;
 import com.loanmanagement.model.Repayment;
 import com.loanmanagement.util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RepaymentDaoImpl implements RepaymentDao {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(RepaymentDaoImpl.class);
 
     @Override
     public void addRepayment(Repayment repayment) {
@@ -34,14 +40,13 @@ public class RepaymentDaoImpl implements RepaymentDao {
 
             statement.executeUpdate();
 
-            System.out.println("Repayment added successfully!");
+            logger.info("Repayment added successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while adding repayment.");
-            e.printStackTrace();
+            logger.error("Error while adding repayment.", e);
         }
     }
 
@@ -81,6 +86,8 @@ public class RepaymentDaoImpl implements RepaymentDao {
                 repayment.setCreatedAt(
                         resultSet.getString("created_at"));
 
+                logger.info("Repayment fetched successfully!");
+
                 resultSet.close();
                 statement.close();
                 connection.close();
@@ -88,13 +95,14 @@ public class RepaymentDaoImpl implements RepaymentDao {
                 return repayment;
             }
 
+            logger.warn("Repayment not found for ID: {}", repaymentId);
+
             resultSet.close();
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while getting repayment.");
-            e.printStackTrace();
+            logger.error("Error while getting repayment.", e);
         }
 
         return null;
@@ -125,14 +133,13 @@ public class RepaymentDaoImpl implements RepaymentDao {
 
             statement.executeUpdate();
 
-            System.out.println("Repayment updated successfully!");
+            logger.info("Repayment updated successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while updating repayment.");
-            e.printStackTrace();
+            logger.error("Error while updating repayment.", e);
         }
     }
 
@@ -149,14 +156,13 @@ public class RepaymentDaoImpl implements RepaymentDao {
 
             statement.executeUpdate();
 
-            System.out.println("Repayment deleted successfully!");
+            logger.info("Repayment deleted successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while deleting repayment.");
-            e.printStackTrace();
+            logger.error("Error while deleting repayment.", e);
         }
     }
 }

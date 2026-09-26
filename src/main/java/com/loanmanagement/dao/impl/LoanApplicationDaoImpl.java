@@ -4,12 +4,18 @@ import com.loanmanagement.dao.LoanApplicationDao;
 import com.loanmanagement.model.LoanApplication;
 import com.loanmanagement.util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoanApplicationDaoImpl implements LoanApplicationDao {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(LoanApplicationDaoImpl.class);
 
     @Override
     public void addLoanApplication(LoanApplication application) {
@@ -42,14 +48,13 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
 
             statement.executeUpdate();
 
-            System.out.println("Loan application added successfully!");
+            logger.info("Loan application added successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while adding loan application.");
-            e.printStackTrace();
+            logger.error("Error while adding loan application.", e);
         }
     }
 
@@ -103,6 +108,8 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
                 application.setReviewedAt(
                         resultSet.getString("reviewed_at"));
 
+                logger.info("Loan application fetched successfully!");
+
                 resultSet.close();
                 statement.close();
                 connection.close();
@@ -110,13 +117,15 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
                 return application;
             }
 
+            logger.warn("Loan application not found for ID: {}",
+                    applicationId);
+
             resultSet.close();
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while getting loan application.");
-            e.printStackTrace();
+            logger.error("Error while getting loan application.", e);
         }
 
         return null;
@@ -146,14 +155,13 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
 
             statement.executeUpdate();
 
-            System.out.println("Loan application updated successfully!");
+            logger.info("Loan application updated successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while updating loan application.");
-            e.printStackTrace();
+            logger.error("Error while updating loan application.", e);
         }
     }
 
@@ -170,14 +178,13 @@ public class LoanApplicationDaoImpl implements LoanApplicationDao {
 
             statement.executeUpdate();
 
-            System.out.println("Loan application deleted successfully!");
+            logger.info("Loan application deleted successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while deleting loan application.");
-            e.printStackTrace();
+            logger.error("Error while deleting loan application.", e);
         }
     }
 }

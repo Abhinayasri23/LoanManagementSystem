@@ -4,12 +4,18 @@ import com.loanmanagement.dao.CustomerDao;
 import com.loanmanagement.model.Customer;
 import com.loanmanagement.util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CustomerDaoImpl implements CustomerDao {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(CustomerDaoImpl.class);
 
     // 1. ADD CUSTOMER
     @Override
@@ -57,14 +63,13 @@ public class CustomerDaoImpl implements CustomerDao {
 
             statement.executeUpdate();
 
-            System.out.println("Customer added successfully!");
+            logger.info("Customer added successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while adding customer.");
-            e.printStackTrace();
+            logger.error("Error while adding customer.", e);
         }
     }
 
@@ -152,6 +157,8 @@ public class CustomerDaoImpl implements CustomerDao {
                 customer.setStatus(
                         resultSet.getString("status"));
 
+                logger.info("Customer fetched successfully!");
+
                 resultSet.close();
                 statement.close();
                 connection.close();
@@ -159,13 +166,14 @@ public class CustomerDaoImpl implements CustomerDao {
                 return customer;
             }
 
+            logger.warn("Customer not found for ID: {}", customerId);
+
             resultSet.close();
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while getting customer.");
-            e.printStackTrace();
+            logger.error("Error while getting customer.", e);
         }
 
         return null;
@@ -221,14 +229,13 @@ public class CustomerDaoImpl implements CustomerDao {
 
             statement.executeUpdate();
 
-            System.out.println("Customer updated successfully!");
+            logger.info("Customer updated successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while updating customer.");
-            e.printStackTrace();
+            logger.error("Error while updating customer.", e);
         }
     }
 
@@ -250,14 +257,13 @@ public class CustomerDaoImpl implements CustomerDao {
 
             statement.executeUpdate();
 
-            System.out.println("Customer deleted successfully!");
+            logger.info("Customer deleted successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while deleting customer.");
-            e.printStackTrace();
+            logger.error("Error while deleting customer.", e);
         }
     }
 }

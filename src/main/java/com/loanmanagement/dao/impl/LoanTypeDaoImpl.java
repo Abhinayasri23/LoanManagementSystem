@@ -4,12 +4,18 @@ import com.loanmanagement.dao.LoanTypeDao;
 import com.loanmanagement.model.LoanType;
 import com.loanmanagement.util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoanTypeDaoImpl implements LoanTypeDao {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(LoanTypeDaoImpl.class);
 
     @Override
     public void addLoanType(LoanType loanType) {
@@ -32,14 +38,13 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
 
             statement.executeUpdate();
 
-            System.out.println("Loan type added successfully!");
+            logger.info("Loan type added successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while adding loan type.");
-            e.printStackTrace();
+            logger.error("Error while adding loan type.", e);
         }
     }
 
@@ -69,6 +74,8 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
                 loanType.setMaxTenureMonths(resultSet.getInt("max_tenure_months"));
                 loanType.setStatus(resultSet.getString("status"));
 
+                logger.info("Loan type fetched successfully!");
+
                 resultSet.close();
                 statement.close();
                 connection.close();
@@ -76,13 +83,14 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
                 return loanType;
             }
 
+            logger.warn("Loan type not found for ID: {}", loanTypeId);
+
             resultSet.close();
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while getting loan type.");
-            e.printStackTrace();
+            logger.error("Error while getting loan type.", e);
         }
 
         return null;
@@ -112,14 +120,13 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
 
             statement.executeUpdate();
 
-            System.out.println("Loan type updated successfully!");
+            logger.info("Loan type updated successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while updating loan type.");
-            e.printStackTrace();
+            logger.error("Error while updating loan type.", e);
         }
     }
 
@@ -136,14 +143,13 @@ public class LoanTypeDaoImpl implements LoanTypeDao {
 
             statement.executeUpdate();
 
-            System.out.println("Loan type deleted successfully!");
+            logger.info("Loan type deleted successfully!");
 
             statement.close();
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("Error while deleting loan type.");
-            e.printStackTrace();
+            logger.error("Error while deleting loan type.", e);
         }
     }
 }

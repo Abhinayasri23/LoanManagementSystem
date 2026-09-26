@@ -20,9 +20,15 @@ import com.loanmanagement.service.impl.UserServiceImpl;
 
 import com.loanmanagement.util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 
 public class AppController {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(AppController.class);
 
     public static void main(String[] args) {
 
@@ -30,9 +36,9 @@ public class AppController {
         Connection connection = DBConnection.getConnection();
 
         if (connection != null) {
-            System.out.println("Connection test successful!");
+            logger.info("Connection test successful!");
         } else {
-            System.out.println("Connection test failed!");
+            logger.error("Connection test failed!");
             return;
         }
 
@@ -44,7 +50,7 @@ public class AppController {
 
         if (loan != null) {
 
-            System.out.println("Loan fetched successfully!");
+            logger.info("Loan fetched successfully!");
 
             // Update loan details
             loan.setPrincipalAmount(120000);
@@ -53,10 +59,10 @@ public class AppController {
 
             loanService.updateLoan(loan);
 
-            System.out.println("Loan update completed!");
+            logger.info("Loan update completed!");
 
         } else {
-            System.out.println("Loan not found!");
+            logger.warn("Loan not found!");
         }
 
         // Creating Application Service object
@@ -69,17 +75,17 @@ public class AppController {
 
         if (application != null) {
 
-            System.out.println("Loan application fetched successfully!");
+            logger.info("Loan application fetched successfully!");
 
             // Update application remarks
             application.setRemarks("Application updated");
 
             applicationService.updateApplication(application);
 
-            System.out.println("Loan application update completed!");
+            logger.info("Loan application update completed!");
 
         } else {
-            System.out.println("Loan application not found!");
+            logger.warn("Loan application not found!");
         }
 
         // Creating LoanType Service object
@@ -92,17 +98,17 @@ public class AppController {
 
         if (loanType != null) {
 
-            System.out.println("Loan type fetched successfully!");
+            logger.info("Loan type fetched successfully!");
 
             // Update loan type description
             loanType.setDescription("Updated loan type");
 
             loanTypeService.updateLoanType(loanType);
 
-            System.out.println("Loan type update completed!");
+            logger.info("Loan type update completed!");
 
         } else {
-            System.out.println("Loan type not found!");
+            logger.warn("Loan type not found!");
         }
 
         // Creating Repayment Service object
@@ -115,17 +121,17 @@ public class AppController {
 
         if (repayment != null) {
 
-            System.out.println("Repayment fetched successfully!");
+            logger.info("Repayment fetched successfully!");
 
             // Update repayment remarks
             repayment.setRemarks("Updated repayment");
 
             repaymentService.updateRepayment(repayment);
 
-            System.out.println("Repayment update completed!");
+            logger.info("Repayment update completed!");
 
         } else {
-            System.out.println("Repayment not found!");
+            logger.warn("Repayment not found!");
         }
 
         // Creating User Service object
@@ -138,17 +144,17 @@ public class AppController {
 
         if (user != null) {
 
-            System.out.println("User fetched successfully!");
+            logger.info("User fetched successfully!");
 
             // Update user status
             user.setStatus("ACTIVE");
 
             userService.updateUser(user);
 
-            System.out.println("User update completed!");
+            logger.info("User update completed!");
 
         } else {
-            System.out.println("User not found!");
+            logger.warn("User not found!");
         }
     }
 }
