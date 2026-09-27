@@ -17,7 +17,8 @@ public class CustomerDaoImpl implements CustomerDao {
     private static final Logger logger =
             LoggerFactory.getLogger(CustomerDaoImpl.class);
 
-    // SQL Queries
+    // ================= SQL QUERIES =================
+
     private static final String ADD_CUSTOMER_SQL =
             "INSERT INTO customers " +
                     "(user_id, full_name, email, phone, dob, address, monthly_income, " +
@@ -42,7 +43,8 @@ public class CustomerDaoImpl implements CustomerDao {
             "DELETE FROM customers WHERE customer_id = ?";
 
 
-    // 1. ADD CUSTOMER
+    // ================= 1. ADD CUSTOMER =================
+
     @Override
     public void addCustomer(Customer customer) {
 
@@ -92,7 +94,8 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
 
-    // 2. GET CUSTOMER BY ID
+    // ================= 2. GET CUSTOMER =================
+
     @Override
     public Customer getCustomerById(int customerId) {
 
@@ -196,7 +199,8 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
 
-    // 3. UPDATE CUSTOMER
+    // ================= 3. FULL UPDATE CUSTOMER =================
+
     @Override
     public void updateCustomer(Customer customer) {
 
@@ -248,7 +252,8 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
 
-    // 4. DELETE CUSTOMER
+    // ================= 4. DELETE CUSTOMER =================
+
     @Override
     public void deleteCustomer(int customerId) {
 
@@ -269,6 +274,306 @@ public class CustomerDaoImpl implements CustomerDao {
 
         } catch (SQLException e) {
             logger.error("Error while deleting customer.", e);
+        }
+    }
+
+
+    // ================= 5. UPDATE NAME =================
+
+    @Override
+    public void updateName(int customerId, String fullName) {
+
+        String sql =
+                "UPDATE customers SET full_name = ? WHERE customer_id = ?";
+
+        updateString(sql, fullName, customerId);
+
+        logger.info("Customer name updated successfully!");
+    }
+
+
+    // ================= 6. UPDATE EMAIL =================
+
+    @Override
+    public void updateEmail(int customerId, String email) {
+
+        String sql =
+                "UPDATE customers SET email = ? WHERE customer_id = ?";
+
+        updateString(sql, email, customerId);
+
+        logger.info("Customer email updated successfully!");
+    }
+
+
+    // ================= 7. UPDATE PHONE =================
+
+    @Override
+    public void updatePhone(int customerId, String phone) {
+
+        String sql =
+                "UPDATE customers SET phone = ? WHERE customer_id = ?";
+
+        updateString(sql, phone, customerId);
+
+        logger.info("Customer phone updated successfully!");
+    }
+
+
+    // ================= 8. UPDATE ADDRESS =================
+
+    @Override
+    public void updateAddress(int customerId, String address) {
+
+        String sql =
+                "UPDATE customers SET address = ? WHERE customer_id = ?";
+
+        updateString(sql, address, customerId);
+
+        logger.info("Customer address updated successfully!");
+    }
+
+
+    // ================= 9. UPDATE MONTHLY INCOME =================
+
+    @Override
+    public void updateMonthlyIncome(
+            int customerId,
+            double monthlyIncome) {
+
+        String sql =
+                "UPDATE customers SET monthly_income = ? WHERE customer_id = ?";
+
+        updateDouble(sql, monthlyIncome, customerId);
+
+        logger.info("Customer monthly income updated successfully!");
+    }
+
+
+    // ================= 10. UPDATE PAN =================
+
+    @Override
+    public void updatePanNumber(
+            int customerId,
+            String panNumber) {
+
+        String sql =
+                "UPDATE customers SET pan_number = ? WHERE customer_id = ?";
+
+        updateString(sql, panNumber, customerId);
+
+        logger.info("Customer PAN number updated successfully!");
+    }
+
+
+    // ================= 11. UPDATE AADHAAR =================
+
+    @Override
+    public void updateAadhaarLast4(
+            int customerId,
+            String aadhaarLast4) {
+
+        String sql =
+                "UPDATE customers SET aadhaar_last4 = ? WHERE customer_id = ?";
+
+        updateString(sql, aadhaarLast4, customerId);
+
+        logger.info("Customer Aadhaar updated successfully!");
+    }
+
+
+    // ================= 12. UPDATE EMPLOYMENT TYPE =================
+
+    @Override
+    public void updateEmploymentType(
+            int customerId,
+            String employmentType) {
+
+        String sql =
+                "UPDATE customers SET employment_type = ? WHERE customer_id = ?";
+
+        updateString(sql, employmentType, customerId);
+
+        logger.info("Employment type updated successfully!");
+    }
+
+
+    // ================= 13. UPDATE ACCOUNT NUMBER =================
+
+    @Override
+    public void updateAccountNumber(
+            int customerId,
+            String accountNumber) {
+
+        String sql =
+                "UPDATE customers SET account_number = ? WHERE customer_id = ?";
+
+        updateString(sql, accountNumber, customerId);
+
+        logger.info("Account number updated successfully!");
+    }
+
+
+    // ================= 14. UPDATE IFSC =================
+
+    @Override
+    public void updateIfscCode(
+            int customerId,
+            String ifscCode) {
+
+        String sql =
+                "UPDATE customers SET ifsc_code = ? WHERE customer_id = ?";
+
+        updateString(sql, ifscCode, customerId);
+
+        logger.info("IFSC code updated successfully!");
+    }
+
+
+    // ================= 15. UPDATE BANK NAME =================
+
+    @Override
+    public void updateBankName(
+            int customerId,
+            String bankName) {
+
+        String sql =
+                "UPDATE customers SET bank_name = ? WHERE customer_id = ?";
+
+        updateString(sql, bankName, customerId);
+
+        logger.info("Bank name updated successfully!");
+    }
+
+
+    // ================= 16. UPDATE CREDIT SCORE =================
+
+    @Override
+    public void updateCreditScore(
+            int customerId,
+            int creditScore) {
+
+        String sql =
+                "UPDATE customers SET credit_score = ? WHERE customer_id = ?";
+
+        updateInt(sql, creditScore, customerId);
+
+        logger.info("Credit score updated successfully!");
+    }
+
+
+    // ================= 17. UPDATE EXISTING EMI =================
+
+    @Override
+    public void updateExistingEmi(
+            int customerId,
+            double existingEmi) {
+
+        String sql =
+                "UPDATE customers SET existing_emi = ? WHERE customer_id = ?";
+
+        updateDouble(sql, existingEmi, customerId);
+
+        logger.info("Existing EMI updated successfully!");
+    }
+
+
+    // ================= 18. UPDATE STATUS =================
+
+    @Override
+    public void updateStatus(
+            int customerId,
+            String status) {
+
+        String sql =
+                "UPDATE customers SET status = ? WHERE customer_id = ?";
+
+        updateString(sql, status, customerId);
+
+        logger.info("Customer status updated successfully!");
+    }
+
+
+    // ================= HELPER METHOD - STRING =================
+
+    private void updateString(
+            String sql,
+            String value,
+            int customerId) {
+
+        try {
+            Connection connection =
+                    DBConnection.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql);
+
+            statement.setString(1, value);
+            statement.setInt(2, customerId);
+
+            statement.executeUpdate();
+
+            statement.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            logger.error("Error while updating customer.", e);
+        }
+    }
+
+
+    // ================= HELPER METHOD - DOUBLE =================
+
+    private void updateDouble(
+            String sql,
+            double value,
+            int customerId) {
+
+        try {
+            Connection connection =
+                    DBConnection.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql);
+
+            statement.setDouble(1, value);
+            statement.setInt(2, customerId);
+
+            statement.executeUpdate();
+
+            statement.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            logger.error("Error while updating customer.", e);
+        }
+    }
+
+
+    // ================= HELPER METHOD - INTEGER =================
+
+    private void updateInt(
+            String sql,
+            int value,
+            int customerId) {
+
+        try {
+            Connection connection =
+                    DBConnection.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql);
+
+            statement.setInt(1, value);
+            statement.setInt(2, customerId);
+
+            statement.executeUpdate();
+
+            statement.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            logger.error("Error while updating customer.", e);
         }
     }
 }

@@ -1,134 +1,100 @@
 package com.loanmanagement.controller;
 
-import com.loanmanagement.model.Loan;
-import com.loanmanagement.model.LoanApplication;
-import com.loanmanagement.model.LoanType;
-import com.loanmanagement.model.User;
+import com.loanmanagement.util.InputUtil;
 
-import com.loanmanagement.service.ApplicationService;
-import com.loanmanagement.service.LoanService;
-import com.loanmanagement.service.LoanTypeService;
-import com.loanmanagement.service.UserService;
-
-import com.loanmanagement.service.impl.ApplicationServiceImpl;
-import com.loanmanagement.service.impl.LoanServiceImpl;
-import com.loanmanagement.service.impl.LoanTypeServiceImpl;
-import com.loanmanagement.service.impl.UserServiceImpl;
-
-import com.loanmanagement.util.DBConnection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
+import java.util.Scanner;
 
 public class AppController {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(AppController.class);
-
     public static void main(String[] args) {
 
-        // Testing database connection
-        Connection connection = DBConnection.getConnection();
+        Scanner scanner = new Scanner(System.in);
 
-        if (connection != null) {
-            logger.info("Connection test successful!");
-        } else {
-            logger.error("Connection test failed!");
-            return;
-        }
+        AuthController authController =
+                new AuthController();
 
-        // Creating Loan Service object
-        LoanService loanService = new LoanServiceImpl();
+        CustomerController customerController =
+                new CustomerController();
 
-        // Get existing loan
-        Loan loan = loanService.getLoanById(1);
+        LoanApplicationController applicationController =
+                new LoanApplicationController();
 
-        if (loan != null) {
+        LoanController loanController =
+                new LoanController();
 
-            logger.info("Loan fetched successfully!");
+        LoanTypeController loanTypeController =
+                new LoanTypeController();
 
-            // Update loan details
-            loan.setPrincipalAmount(120000);
-            loan.setInterestRate(11.0);
-            loan.setTenureMonths(24);
+        UserController userController =
+                new UserController();
 
-            loanService.updateLoan(loan);
+        int choice;
 
-            logger.info("Loan update completed!");
+        do {
 
-        } else {
-            logger.warn("Loan not found!");
-        }
+            System.out.println();
+            System.out.println("======================================");
+            System.out.println("       LOAN MANAGEMENT SYSTEM");
+            System.out.println("======================================");
+            System.out.println("1. Login");
+            System.out.println("2. Customer Management");
+            System.out.println("3. Loan Application");
+            System.out.println("4. Loan Management");
+            System.out.println("5. Loan Type Management");
+            System.out.println("6. User Management");
+            System.out.println("7. Exit");
+            System.out.println("======================================");
 
-        // Creating Application Service object
-        ApplicationService applicationService =
-                new ApplicationServiceImpl();
+            choice = InputUtil.readInt(
+                    scanner,
+                    "Enter your choice: "
+            );
 
-        // Get existing loan application
-        LoanApplication application =
-                applicationService.getApplicationById(1);
+            switch (choice) {
 
-        if (application != null) {
+                case 1:
+                    authController.login();
+                    break;
 
-            logger.info("Loan application fetched successfully!");
+                case 2:
+                    customerController.customerMenu();
+                    break;
 
-            // Update application remarks
-            application.setRemarks("Application updated");
+                case 3:
+                    applicationController.applicationMenu();
+                    break;
 
-            applicationService.updateApplication(application);
+                case 4:
+                    loanController.loanMenu();
+                    break;
 
-            logger.info("Loan application update completed!");
+                case 5:
+                    loanTypeController.loanTypeMenu();
+                    break;
 
-        } else {
-            logger.warn("Loan application not found!");
-        }
+                case 6:
+                    userController.userMenu();
+                    break;
 
+                case 7:
+                    System.out.println();
+                    System.out.println(
+                            "Thank you for using Loan Management System!"
+                    );
+                    break;
 
-        LoanTypeService loanTypeService =
-                new LoanTypeServiceImpl();
+                default:
+                    System.out.println();
+                    System.out.println(
+                            "Invalid choice!"
+                    );
+                    System.out.println(
+                            "Please enter a valid option."
+                    );
+            }
 
-        // Get existing loan type
-        LoanType loanType =
-                loanTypeService.getLoanTypeById(1);
+        } while (choice != 7);
 
-        if (loanType != null) {
-
-            logger.info("Loan type fetched successfully!");
-
-            // Update loan type description
-            loanType.setDescription("Updated loan type");
-
-            loanTypeService.updateLoanType(loanType);
-
-            logger.info("Loan type update completed!");
-
-        } else {
-            logger.warn("Loan type not found!");
-        }
-
-        // Creating User Service object
-        UserService userService =
-                new UserServiceImpl();
-
-        // Get existing user
-        User user =
-                userService.getUserById(1);
-
-        if (user != null) {
-
-            logger.info("User fetched successfully!");
-
-            // Update user status
-            user.setStatus("ACTIVE");
-
-            userService.updateUser(user);
-
-            logger.info("User update completed!");
-
-        } else {
-            logger.warn("User not found!");
-        }
+        scanner.close();
     }
 }
