@@ -85,7 +85,7 @@ public class AppController {
             logger.warn("Loan application not found!");
         }
 
-        // Creating LoanType Service object
+
         LoanTypeService loanTypeService =
                 new LoanTypeServiceImpl();
 
