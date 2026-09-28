@@ -1,5 +1,6 @@
 package com.loanmanagement.service;
 
+import com.loanmanagement.model.User;
 import com.loanmanagement.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.Test;
 
@@ -13,25 +14,25 @@ public class AuthServiceTest {
     @Test
     void loginSuccessTest() {
 
-        boolean result =
+        User result =
                 authService.login(
                         "abhivinitha",
-                        "test123"
-                );
+                        "test123");
 
-        assertTrue(result);
+        assertNotNull(result);
+        assertEquals("abhivinitha",
+                result.getUsername());
     }
 
     @Test
     void loginFailureTest() {
 
-        boolean result =
+        User result =
                 authService.login(
                         "wronguser",
-                        "wrongpassword"
-                );
+                        "wrongpassword");
 
-        assertFalse(result);
+        assertNull(result);
     }
 
     @Test

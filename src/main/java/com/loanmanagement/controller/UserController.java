@@ -356,14 +356,4 @@ public class UserController {
         }
     }
 
-
-    // ================= MAIN =================
-
-    public static void main(String[] args) {
-
-        UserController controller =
-                new UserController();
-
-        controller.userMenu();
-    }
 }

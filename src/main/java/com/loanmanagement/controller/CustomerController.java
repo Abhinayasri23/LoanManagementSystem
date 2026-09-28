@@ -760,14 +760,4 @@ public class CustomerController {
         }
     }
 
-
-    // ================= MAIN =================
-
-    public static void main(String[] args) {
-
-        CustomerController controller =
-                new CustomerController();
-
-        controller.customerMenu();
-    }
 }

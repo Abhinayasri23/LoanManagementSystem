@@ -1,5 +1,6 @@
 package com.loanmanagement.controller;
 
+import com.loanmanagement.model.User;
 import com.loanmanagement.util.InputUtil;
 
 import java.util.Scanner;
@@ -10,90 +11,184 @@ public class AppController {
 
         Scanner scanner = new Scanner(System.in);
 
-        AuthController authController =
-                new AuthController();
-
-        CustomerController customerController =
-                new CustomerController();
-
+        AuthController authController = new AuthController();
+        CustomerController customerController = new CustomerController();
         LoanApplicationController applicationController =
                 new LoanApplicationController();
+        LoanController loanController = new LoanController();
+        LoanTypeController loanTypeController = new LoanTypeController();
+        UserController userController = new UserController();
 
-        LoanController loanController =
-                new LoanController();
-
-        LoanTypeController loanTypeController =
-                new LoanTypeController();
-
-        UserController userController =
-                new UserController();
-
-        int choice;
-
-        do {
+        while (true) {
 
             System.out.println();
-            System.out.println("======================================");
-            System.out.println("       LOAN MANAGEMENT SYSTEM");
-            System.out.println("======================================");
+            System.out.println("===== LOAN MANAGEMENT SYSTEM =====");
             System.out.println("1. Login");
-            System.out.println("2. Customer Management");
-            System.out.println("3. Loan Application");
-            System.out.println("4. Loan Management");
-            System.out.println("5. Loan Type Management");
-            System.out.println("6. User Management");
-            System.out.println("7. Exit");
-            System.out.println("======================================");
+            System.out.println("2. Exit");
 
-            choice = InputUtil.readInt(
-                    scanner,
-                    "Enter your choice: "
-            );
+            int choice = InputUtil.readInt(
+                    scanner, "Enter choice: ");
 
-            switch (choice) {
+            if (choice == 1) {
 
-                case 1:
-                    authController.login();
-                    break;
+                User user = authController.login();
 
-                case 2:
-                    customerController.customerMenu();
-                    break;
+                if (user == null) {
+                    continue;
+                }
 
-                case 3:
-                    applicationController.applicationMenu();
-                    break;
+                System.out.println();
+                System.out.println("Welcome, " + user.getUsername());
+                System.out.println("Role: " + user.getRole());
 
-                case 4:
-                    loanController.loanMenu();
-                    break;
 
-                case 5:
-                    loanTypeController.loanTypeMenu();
-                    break;
+                // CUSTOMER
+                if (user.getRole()
+                        .equalsIgnoreCase("CUSTOMER")) {
 
-                case 6:
-                    userController.userMenu();
-                    break;
+                    while (true) {
 
-                case 7:
-                    System.out.println();
-                    System.out.println(
-                            "Thank you for using Loan Management System!"
-                    );
-                    break;
+                        System.out.println();
+                        System.out.println("===== CUSTOMER MENU =====");
+                        System.out.println("1. Customer Management");
+                        System.out.println("2. Loan Application");
+                        System.out.println("3. Loan Management");
+                        System.out.println("4. Logout");
 
-                default:
-                    System.out.println();
-                    System.out.println(
-                            "Invalid choice!"
-                    );
-                    System.out.println(
-                            "Please enter a valid option."
-                    );
+                        int option = InputUtil.readInt(
+                                scanner, "Enter choice: ");
+
+                        if (option == 1) {
+
+                            customerController.customerMenu();
+
+                        } else if (option == 2) {
+
+                            applicationController.applicationMenu();
+
+                        } else if (option == 3) {
+
+                            loanController.loanMenu();
+
+                        } else if (option == 4) {
+
+                            System.out.println("Logged out!");
+                            break;
+
+                        } else {
+
+                            System.out.println("Invalid choice!");
+                        }
+                    }
+                }
+
+                // LOAN OFFICER
+                else if (user.getRole()
+                        .equalsIgnoreCase("LOAN_OFFICER")) {
+                    while (true) {
+                        System.out.println();
+                        System.out.println(
+                                "===== LOAN OFFICER MENU =====");
+                        System.out.println(
+                                "1. Loan Applications");
+                        System.out.println(
+                                "2. Create Loan");
+                        System.out.println(
+                                "3. Loan Management");
+                        System.out.println(
+                                "4. Logout");
+                        int option = InputUtil.readInt(
+                                scanner, "Enter choice: ");
+                        if (option == 1) {
+
+                            applicationController
+                                    .officerApplicationMenu();
+
+                        } else if (option == 2) {
+
+                            loanController.createLoanMenu();
+
+                        } else if (option == 3) {
+
+                            loanController.loanMenu();
+
+                        } else if (option == 4) {
+
+                            System.out.println("Logged out!");
+                            break;
+
+                        } else {
+
+                            System.out.println("Invalid choice!");
+                        }
+                    }
+                }
+                // ADMIN
+                else if (user.getRole()
+                        .equalsIgnoreCase("ADMIN")) {
+
+                    while (true) {
+
+                        System.out.println();
+                        System.out.println("===== ADMIN MENU =====");
+                        System.out.println("1. User Management");
+                        System.out.println("2. Customer Management");
+                        System.out.println("3. Loan Application");
+                        System.out.println("4. Loan Management");
+                        System.out.println("5. Loan Type Management");
+                        System.out.println("6. Logout");
+
+                        int option = InputUtil.readInt(
+                                scanner, "Enter choice: ");
+
+                        if (option == 1) {
+
+                            userController.userMenu();
+
+                        } else if (option == 2) {
+
+                            customerController.customerMenu();
+
+                        } else if (option == 3) {
+
+                            applicationController.applicationMenu();
+
+                        } else if (option == 4) {
+
+                            loanController.loanMenu();
+
+                        } else if (option == 5) {
+
+                            loanTypeController.loanTypeMenu();
+
+                        } else if (option == 6) {
+
+                            System.out.println("Logged out!");
+                            break;
+
+                        } else {
+
+                            System.out.println("Invalid choice!");
+                        }
+                    }
+                }
+
+                else {
+
+                    System.out.println("Unknown role!");
+                }
+
+            } else if (choice == 2) {
+
+                System.out.println(
+                        "Thank you for using Loan Management System!");
+                break;
+
+            } else {
+
+                System.out.println("Invalid choice!");
             }
-
-        } while (choice != 7);
+        }
 
         scanner.close();
     }

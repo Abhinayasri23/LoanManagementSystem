@@ -3,6 +3,7 @@ package com.loanmanagement.service;
 import com.loanmanagement.model.LoanApplication;
 
 public interface ApplicationService {
+
     void addApplication(LoanApplication application);
 
     LoanApplication getApplicationById(int applicationId);
@@ -10,4 +11,8 @@ public interface ApplicationService {
     void updateApplication(LoanApplication application);
 
     void deleteApplication(int applicationId);
+
+    void approveApplication(int applicationId);
+
+    void rejectApplication(int applicationId);
 }

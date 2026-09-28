@@ -1,5 +1,6 @@
 package com.loanmanagement.service.impl;
 
+import com.loanmanagement.model.User;
 import com.loanmanagement.service.AuthService;
 import com.loanmanagement.util.DBConnection;
 import com.loanmanagement.util.ValidationUtil;
@@ -20,8 +21,9 @@ public class AuthServiceImpl implements AuthService {
     private static final String LOGIN_SQL =
             "SELECT * FROM users WHERE username = ? AND password = ?";
 
+
     @Override
-    public boolean login(String username, String password) {
+    public User login(String username, String password) {
 
         ValidationUtil.validateNotEmpty(
                 username, "Username");
@@ -29,23 +31,50 @@ public class AuthServiceImpl implements AuthService {
         ValidationUtil.validateNotEmpty(
                 password, "Password");
 
-        try (Connection connection = DBConnection.getConnection();
+
+        try (Connection connection =
+                     DBConnection.getConnection();
+
              PreparedStatement statement =
                      connection.prepareStatement(LOGIN_SQL)) {
+
 
             statement.setString(1, username);
             statement.setString(2, password);
 
+
             ResultSet resultSet =
                     statement.executeQuery();
 
+
             if (resultSet.next()) {
+
+                User user = new User();
+
+                user.setUserId(
+                        resultSet.getInt("user_id"));
+
+                user.setUsername(
+                        resultSet.getString("username"));
+
+                user.setPassword(
+                        resultSet.getString("password"));
+
+                user.setRole(
+                        resultSet.getString("role"));
+
+                user.setStatus(
+                        resultSet.getString("status"));
+
+                user.setCreatedAt(
+                        resultSet.getString("created_at"));
+
 
                 logger.info(
                         "User login successful: {}",
                         username);
 
-                return true;
+                return user;
 
             } else {
 
@@ -53,8 +82,9 @@ public class AuthServiceImpl implements AuthService {
                         "Login failed for username: {}",
                         username);
 
-                return false;
+                return null;
             }
+
 
         } catch (SQLException e) {
 
@@ -62,9 +92,10 @@ public class AuthServiceImpl implements AuthService {
                     "Login failed due to database error",
                     e);
 
-            return false;
+            return null;
         }
     }
+
 
     @Override
     public void logout(int userId) {

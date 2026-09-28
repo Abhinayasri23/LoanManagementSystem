@@ -389,14 +389,4 @@ public class LoanTypeController {
         }
     }
 
-
-    // ================= MAIN =================
-
-    public static void main(String[] args) {
-
-        LoanTypeController controller =
-                new LoanTypeController();
-
-        controller.loanTypeMenu();
-    }
 }

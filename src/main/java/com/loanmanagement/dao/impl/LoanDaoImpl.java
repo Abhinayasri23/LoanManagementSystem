@@ -17,7 +17,8 @@ public class LoanDaoImpl implements LoanDao {
     private static final Logger logger =
             LoggerFactory.getLogger(LoanDaoImpl.class);
 
-    // SQL QUERIES
+    // ================= SQL QUERIES =================
+
     private static final String ADD_LOAN_SQL =
             "INSERT INTO loans " +
                     "(application_id, customer_id, loan_type_id, principal_amount, " +
@@ -40,13 +41,14 @@ public class LoanDaoImpl implements LoanDao {
             "DELETE FROM loans WHERE loan_id = ?";
 
 
+    // ================= ADD LOAN =================
+
     @Override
     public void addLoan(Loan loan) {
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement statement =
-                    connection.prepareStatement(ADD_LOAN_SQL);
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(ADD_LOAN_SQL)) {
 
             statement.setInt(1, loan.getApplicationId());
             statement.setInt(2, loan.getCustomerId());
@@ -64,74 +66,101 @@ public class LoanDaoImpl implements LoanDao {
 
             logger.info("Loan added successfully!");
 
-            statement.close();
-            connection.close();
-
         } catch (SQLException e) {
+
             logger.error("Error while adding loan.", e);
+
+            throw new RuntimeException(
+                    "Unable to add loan: " + e.getMessage(), e);
         }
     }
 
+
+    // ================= GET LOAN =================
 
     @Override
     public Loan getLoanById(int loanId) {
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement statement =
-                    connection.prepareStatement(GET_LOAN_BY_ID_SQL);
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(GET_LOAN_BY_ID_SQL)) {
 
             statement.setInt(1, loanId);
 
-            ResultSet resultSet = statement.executeQuery();
+            try (ResultSet resultSet = statement.executeQuery()) {
 
-            if (resultSet.next()) {
+                if (resultSet.next()) {
 
-                Loan loan = new Loan();
+                    Loan loan = new Loan();
 
-                loan.setLoanId(resultSet.getInt("loan_id"));
-                loan.setApplicationId(resultSet.getInt("application_id"));
-                loan.setCustomerId(resultSet.getInt("customer_id"));
-                loan.setLoanTypeId(resultSet.getInt("loan_type_id"));
-                loan.setPrincipalAmount(resultSet.getDouble("principal_amount"));
-                loan.setInterestRate(resultSet.getDouble("interest_rate"));
-                loan.setTenureMonths(resultSet.getInt("tenure_months"));
-                loan.setTotalPayable(resultSet.getDouble("total_payable"));
-                loan.setOutstandingAmount(resultSet.getDouble("outstanding_amount"));
-                loan.setStartDate(resultSet.getString("start_date"));
-                loan.setStatus(resultSet.getString("status"));
-                loan.setCreatedBy(resultSet.getInt("created_by"));
+                    loan.setLoanId(
+                            resultSet.getInt("loan_id"));
 
-                logger.info("Loan fetched successfully!");
+                    loan.setApplicationId(
+                            resultSet.getInt("application_id"));
 
-                resultSet.close();
-                statement.close();
-                connection.close();
+                    loan.setCustomerId(
+                            resultSet.getInt("customer_id"));
 
-                return loan;
+                    loan.setLoanTypeId(
+                            resultSet.getInt("loan_type_id"));
+
+                    loan.setPrincipalAmount(
+                            resultSet.getDouble("principal_amount"));
+
+                    loan.setInterestRate(
+                            resultSet.getDouble("interest_rate"));
+
+                    loan.setTenureMonths(
+                            resultSet.getInt("tenure_months"));
+
+                    loan.setTotalPayable(
+                            resultSet.getDouble("total_payable"));
+
+                    loan.setOutstandingAmount(
+                            resultSet.getDouble("outstanding_amount"));
+
+                    loan.setStartDate(
+                            resultSet.getString("start_date"));
+
+                    loan.setStatus(
+                            resultSet.getString("status"));
+
+                    loan.setCreatedBy(
+                            resultSet.getInt("created_by"));
+
+                    logger.info("Loan fetched successfully!");
+
+                    return loan;
+                }
             }
 
-            logger.warn("Loan not found for ID: {}", loanId);
+            logger.warn(
+                    "Loan not found for ID: {}",
+                    loanId);
 
-            resultSet.close();
-            statement.close();
-            connection.close();
+            return null;
 
         } catch (SQLException e) {
-            logger.error("Error while getting loan.", e);
-        }
 
-        return null;
+            logger.error(
+                    "Error while getting loan.",
+                    e);
+
+            throw new RuntimeException(
+                    "Unable to get loan: " + e.getMessage(), e);
+        }
     }
 
+
+    // ================= UPDATE LOAN =================
 
     @Override
     public void updateLoan(Loan loan) {
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement statement =
-                    connection.prepareStatement(UPDATE_LOAN_SQL);
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(UPDATE_LOAN_SQL)) {
 
             statement.setInt(1, loan.getApplicationId());
             statement.setInt(2, loan.getCustomerId());
@@ -150,22 +179,26 @@ public class LoanDaoImpl implements LoanDao {
 
             logger.info("Loan updated successfully!");
 
-            statement.close();
-            connection.close();
-
         } catch (SQLException e) {
-            logger.error("Error while updating loan.", e);
+
+            logger.error(
+                    "Error while updating loan.",
+                    e);
+
+            throw new RuntimeException(
+                    "Unable to update loan: " + e.getMessage(), e);
         }
     }
 
 
+    // ================= DELETE LOAN =================
+
     @Override
     public void deleteLoan(int loanId) {
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement statement =
-                    connection.prepareStatement(DELETE_LOAN_SQL);
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(DELETE_LOAN_SQL)) {
 
             statement.setInt(1, loanId);
 
@@ -173,11 +206,14 @@ public class LoanDaoImpl implements LoanDao {
 
             logger.info("Loan deleted successfully!");
 
-            statement.close();
-            connection.close();
-
         } catch (SQLException e) {
-            logger.error("Error while deleting loan.", e);
+
+            logger.error(
+                    "Error while deleting loan.",
+                    e);
+
+            throw new RuntimeException(
+                    "Unable to delete loan: " + e.getMessage(), e);
         }
     }
 }

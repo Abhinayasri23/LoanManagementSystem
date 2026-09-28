@@ -9,76 +9,166 @@ import com.loanmanagement.util.ValidationUtil;
 
 public class ApplicationServiceImpl implements ApplicationService {
 
-    private LoanApplicationDao applicationDao = new LoanApplicationDaoImpl();
+    private LoanApplicationDao applicationDao =
+            new LoanApplicationDaoImpl();
+
+
+    // ================= ADD =================
 
     @Override
-    public void addApplication(LoanApplication application) {
+    public void addApplication(
+            LoanApplication application) {
 
         ValidationUtil.validatePositive(
-                application.getCustomerId(), "Customer ID");
+                application.getCustomerId(),
+                "Customer ID");
 
         ValidationUtil.validatePositive(
-                application.getLoanTypeId(), "Loan Type ID");
+                application.getLoanTypeId(),
+                "Loan Type ID");
 
         ValidationUtil.validatePositive(
-                application.getRequestedAmount(), "Requested Amount");
+                application.getRequestedAmount(),
+                "Requested Amount");
 
         ValidationUtil.validatePositive(
-                application.getTenureMonths(), "Tenure Months");
+                application.getTenureMonths(),
+                "Tenure Months");
 
         ValidationUtil.validateNotEmpty(
-                application.getPurpose(), "Purpose");
+                application.getPurpose(),
+                "Purpose");
 
-        applicationDao.addLoanApplication(application);
+        applicationDao.addLoanApplication(
+                application);
     }
 
+
+    // ================= GET =================
+
     @Override
-    public LoanApplication getApplicationById(int applicationId) {
+    public LoanApplication getApplicationById(
+            int applicationId) {
 
         ValidationUtil.validatePositive(
-                applicationId, "Application ID");
+                applicationId,
+                "Application ID");
 
         LoanApplication application =
-                applicationDao.getLoanApplicationById(applicationId);
+                applicationDao.getLoanApplicationById(
+                        applicationId);
 
         if (application == null) {
+
             throw new NotFoundException(
-                    "Loan application not found with ID: " + applicationId);
+                    "Loan application not found with ID: "
+                            + applicationId);
         }
 
         return application;
     }
 
+
+    // ================= UPDATE =================
+
     @Override
-    public void updateApplication(LoanApplication application) {
+    public void updateApplication(
+            LoanApplication application) {
 
         ValidationUtil.validatePositive(
-                application.getApplicationId(), "Application ID");
+                application.getApplicationId(),
+                "Application ID");
 
         ValidationUtil.validatePositive(
-                application.getCustomerId(), "Customer ID");
+                application.getCustomerId(),
+                "Customer ID");
 
         ValidationUtil.validatePositive(
-                application.getLoanTypeId(), "Loan Type ID");
+                application.getLoanTypeId(),
+                "Loan Type ID");
 
         ValidationUtil.validatePositive(
-                application.getRequestedAmount(), "Requested Amount");
+                application.getRequestedAmount(),
+                "Requested Amount");
 
         ValidationUtil.validatePositive(
-                application.getTenureMonths(), "Tenure Months");
+                application.getTenureMonths(),
+                "Tenure Months");
 
         ValidationUtil.validateNotEmpty(
-                application.getPurpose(), "Purpose");
+                application.getPurpose(),
+                "Purpose");
 
-        applicationDao.updateLoanApplication(application);
+        applicationDao.updateLoanApplication(
+                application);
     }
 
+
+    // ================= DELETE =================
+
     @Override
-    public void deleteApplication(int applicationId) {
+    public void deleteApplication(
+            int applicationId) {
 
         ValidationUtil.validatePositive(
-                applicationId, "Application ID");
+                applicationId,
+                "Application ID");
 
-        applicationDao.deleteLoanApplication(applicationId);
+        applicationDao.deleteLoanApplication(
+                applicationId);
+    }
+
+
+    // ================= APPROVE =================
+
+    @Override
+    public void approveApplication(
+            int applicationId) {
+
+        ValidationUtil.validatePositive(
+                applicationId,
+                "Application ID");
+
+        LoanApplication application =
+                getApplicationById(applicationId);
+
+        if (!"PENDING".equalsIgnoreCase(
+                application.getStatus())) {
+
+            throw new IllegalStateException(
+                    "Only PENDING applications can be approved.");
+        }
+
+        application.setStatus("APPROVED");
+
+        applicationDao.updateLoanApplication(
+                application);
+    }
+
+
+    // ================= REJECT =================
+
+    @Override
+    public void rejectApplication(
+            int applicationId) {
+
+        ValidationUtil.validatePositive(
+                applicationId,
+                "Application ID");
+
+        LoanApplication application =
+                getApplicationById(applicationId);
+
+        if (!"PENDING".equalsIgnoreCase(
+                application.getStatus())) {
+
+            throw new IllegalStateException(
+                    "Only PENDING applications can be rejected.");
+        }
+
+        application.setStatus("REJECTED");
+
+        applicationDao.updateLoanApplication(
+                application);
     }
 }

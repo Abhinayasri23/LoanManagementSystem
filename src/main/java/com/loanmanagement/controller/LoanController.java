@@ -1,8 +1,11 @@
 package com.loanmanagement.controller;
 
 import com.loanmanagement.model.Loan;
+import com.loanmanagement.model.LoanApplication;
 import com.loanmanagement.service.LoanService;
+import com.loanmanagement.service.ApplicationService;
 import com.loanmanagement.service.impl.LoanServiceImpl;
+import com.loanmanagement.service.impl.ApplicationServiceImpl;
 import com.loanmanagement.exception.NotFoundException;
 import com.loanmanagement.util.InputUtil;
 
@@ -13,9 +16,23 @@ public class LoanController {
     private LoanService loanService =
             new LoanServiceImpl();
 
+    private ApplicationService applicationService =
+            new ApplicationServiceImpl();
 
-    // ================= LOAN MENU =================
 
+    // CREATE LOAN MENU
+    public void createLoanMenu() {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println();
+        System.out.println("========== CREATE LOAN ==========");
+
+        createLoan(scanner);
+    }
+
+
+    // LOAN MANAGEMENT MENU
     public void loanMenu() {
 
         Scanner scanner = new Scanner(System.in);
@@ -24,383 +41,215 @@ public class LoanController {
 
             System.out.println();
             System.out.println("========== LOAN MANAGEMENT ==========");
-            System.out.println("1. Create Loan");
-            System.out.println("2. View Loan");
-            System.out.println("3. Update Loan");
-            System.out.println("4. Delete Loan");
-            System.out.println("5. Back");
+            System.out.println("1. View Loan");
+            System.out.println("2. Update Loan");
+            System.out.println("3. Delete Loan");
+            System.out.println("4. Back");
 
             int choice =
                     InputUtil.readInt(
                             scanner,
                             "Enter choice: ");
 
-            switch (choice) {
+            if (choice == 1) {
 
-                case 1:
-                    addLoan(scanner);
-                    break;
+                viewLoan(scanner);
 
-                case 2:
-                    getLoan(scanner);
-                    break;
+            } else if (choice == 2) {
 
-                case 3:
-                    updateLoan(scanner);
-                    break;
+                updateLoan(scanner);
 
-                case 4:
-                    deleteLoan(scanner);
-                    break;
+            } else if (choice == 3) {
 
-                case 5:
-                    return;
+                deleteLoan(scanner);
 
-                default:
-                    System.out.println();
-                    System.out.println(
-                            "Invalid choice!");
+            } else if (choice == 4) {
 
-                    System.out.println(
-                            "Please enter a valid option.");
+                return;
+
+            } else {
+
+                System.out.println("Invalid choice!");
             }
         }
     }
 
 
-    // ================= ADD LOAN =================
+    // CREATE LOAN
+    private void createLoan(Scanner scanner) {
 
-    private void addLoan(Scanner scanner) {
+        int applicationId =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Approved Application ID: ");
 
-        while (true) {
+        try {
 
-            try {
+            LoanApplication application =
+                    applicationService.getApplicationById(
+                            applicationId);
 
-                Loan loan = new Loan();
-
-                loan.setApplicationId(
-                        InputUtil.readInt(
-                                scanner,
-                                "Enter Application ID: "));
-
-                loan.setCustomerId(
-                        InputUtil.readInt(
-                                scanner,
-                                "Enter Customer ID: "));
-
-                loan.setLoanTypeId(
-                        InputUtil.readInt(
-                                scanner,
-                                "Enter Loan Type ID: "));
-
-                loan.setPrincipalAmount(
-                        InputUtil.readDouble(
-                                scanner,
-                                "Enter Principal Amount: "));
-
-                loan.setInterestRate(
-                        InputUtil.readDouble(
-                                scanner,
-                                "Enter Interest Rate: "));
-
-                loan.setTenureMonths(
-                        InputUtil.readInt(
-                                scanner,
-                                "Enter Tenure (months): "));
-
-                loan.setCreatedBy(
-                        InputUtil.readInt(
-                                scanner,
-                                "Enter Created By (User ID): "));
-
-                loan.setStatus(
-                        InputUtil.readString(
-                                scanner,
-                                "Enter Loan Status: "));
-
-                loanService.addLoan(loan);
+            if (!"APPROVED".equalsIgnoreCase(
+                    application.getStatus())) {
 
                 System.out.println();
                 System.out.println(
-                        "Loan created successfully!");
-
-                break;
-
-            } catch (RuntimeException e) {
-
-                System.out.println();
+                        "Loan cannot be created!");
                 System.out.println(
-                        "Invalid loan details!");
-
+                        "Application is not approved.");
                 System.out.println(
-                        "Please enter the details again.");
+                        "Status: "
+                                + application.getStatus());
+
+                return;
             }
-        }
-    }
 
+            Loan loan = new Loan();
 
-    // ================= VIEW LOAN =================
+            loan.setApplicationId(applicationId);
 
-    private void getLoan(Scanner scanner) {
+            loan.setCustomerId(
+                    application.getCustomerId());
 
-        while (true) {
+            loan.setLoanTypeId(
+                    application.getLoanTypeId());
 
-            int loanId =
+            loan.setPrincipalAmount(
+                    application.getRequestedAmount());
+
+            loan.setTenureMonths(
+                    application.getTenureMonths());
+
+            loan.setInterestRate(
+                    InputUtil.readDouble(
+                            scanner,
+                            "Enter Interest Rate: "));
+
+            loan.setCreatedBy(
                     InputUtil.readInt(
                             scanner,
-                            "Enter Loan ID: ");
+                            "Enter Officer User ID: "));
 
-            try {
+            loan.setStatus("ACTIVE");
 
-                Loan loan =
-                        loanService.getLoanById(
-                                loanId);
+            loanService.addLoan(loan);
 
-                System.out.println();
-                System.out.println(
-                        "========== LOAN DETAILS ==========");
+            System.out.println();
+            System.out.println(
+                    "Loan created successfully!");
+            System.out.println(
+                    "Loan Status: ACTIVE");
 
-                System.out.println(
-                        "Loan ID          : "
-                                + loan.getLoanId());
+        } catch (NotFoundException e) {
 
-                System.out.println(
-                        "Application ID   : "
-                                + loan.getApplicationId());
+            System.out.println(
+                    "Application not found!");
 
-                System.out.println(
-                        "Customer ID      : "
-                                + loan.getCustomerId());
+        } catch (RuntimeException e) {
 
-                System.out.println(
-                        "Loan Type ID     : "
-                                + loan.getLoanTypeId());
-
-                System.out.println(
-                        "Principal Amount : "
-                                + loan.getPrincipalAmount());
-
-                System.out.println(
-                        "Interest Rate    : "
-                                + loan.getInterestRate());
-
-                System.out.println(
-                        "Tenure (Months)  : "
-                                + loan.getTenureMonths());
-
-                System.out.println(
-                        "Created By       : "
-                                + loan.getCreatedBy());
-
-                System.out.println(
-                        "Status           : "
-                                + loan.getStatus());
-
-                System.out.println(
-                        "==================================");
-
-                break;
-
-            } catch (NotFoundException e) {
-
-                System.out.println();
-                System.out.println(
-                        "Loan not found!");
-
-                System.out.println(
-                        "Please enter Loan ID again.");
-            }
+            System.out.println(
+                    "Loan creation failed!");
+            System.out.println(
+                    e.getMessage());
         }
     }
 
 
-    // ================= UPDATE LOAN =================
+    // VIEW LOAN
+    private void viewLoan(Scanner scanner) {
 
+        int loanId =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Loan ID: ");
+
+        try {
+
+            Loan loan =
+                    loanService.getLoanById(loanId);
+
+            System.out.println();
+            System.out.println("========== LOAN ==========");
+            System.out.println(
+                    "Loan ID: " + loan.getLoanId());
+            System.out.println(
+                    "Application ID: "
+                            + loan.getApplicationId());
+            System.out.println(
+                    "Customer ID: "
+                            + loan.getCustomerId());
+            System.out.println(
+                    "Amount: "
+                            + loan.getPrincipalAmount());
+            System.out.println(
+                    "Interest: "
+                            + loan.getInterestRate());
+            System.out.println(
+                    "Tenure: "
+                            + loan.getTenureMonths());
+            System.out.println(
+                    "Status: "
+                            + loan.getStatus());
+
+        } catch (NotFoundException e) {
+
+            System.out.println(
+                    "Loan not found!");
+        }
+    }
+
+
+    // UPDATE LOAN
     private void updateLoan(Scanner scanner) {
 
-        while (true) {
+        int loanId =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Loan ID: ");
 
-            int loanId =
-                    InputUtil.readInt(
+        try {
+
+            Loan loan =
+                    loanService.getLoanById(loanId);
+
+            loan.setStatus(
+                    InputUtil.readString(
                             scanner,
-                            "Enter Loan ID: ");
+                            "Enter New Status: "));
 
-            try {
+            loanService.updateLoan(loan);
 
-                Loan loan =
-                        loanService.getLoanById(
-                                loanId);
+            System.out.println(
+                    "Loan updated successfully!");
 
-                System.out.println();
-                System.out.println(
-                        "1. Principal Amount");
+        } catch (RuntimeException e) {
 
-                System.out.println(
-                        "2. Interest Rate");
-
-                System.out.println(
-                        "3. Tenure");
-
-                System.out.println(
-                        "4. Status");
-
-                System.out.println(
-                        "5. Cancel");
-
-                int choice =
-                        InputUtil.readInt(
-                                scanner,
-                                "Enter field choice: ");
-
-                switch (choice) {
-
-                    case 1:
-
-                        loan.setPrincipalAmount(
-                                InputUtil.readDouble(
-                                        scanner,
-                                        "New Principal Amount: "));
-
-                        break;
-
-                    case 2:
-
-                        loan.setInterestRate(
-                                InputUtil.readDouble(
-                                        scanner,
-                                        "New Interest Rate: "));
-
-                        break;
-
-                    case 3:
-
-                        loan.setTenureMonths(
-                                InputUtil.readInt(
-                                        scanner,
-                                        "New Tenure: "));
-
-                        break;
-
-                    case 4:
-
-                        loan.setStatus(
-                                InputUtil.readString(
-                                        scanner,
-                                        "New Status: "));
-
-                        break;
-
-                    case 5:
-
-                        System.out.println(
-                                "Update cancelled.");
-
-                        return;
-
-                    default:
-
-                        System.out.println();
-                        System.out.println(
-                                "Invalid choice!");
-
-                        System.out.println(
-                                "Please enter a valid option.");
-
-                        continue;
-                }
-
-                loanService.updateLoan(loan);
-
-                System.out.println();
-                System.out.println(
-                        "Loan updated successfully!");
-
-                break;
-
-            } catch (NotFoundException e) {
-
-                System.out.println();
-                System.out.println(
-                        "Loan not found!");
-
-                System.out.println(
-                        "Please enter Loan ID again.");
-
-            } catch (RuntimeException e) {
-
-                System.out.println();
-                System.out.println(
-                        "Update failed!");
-
-                System.out.println(
-                        "Please check the entered values.");
-
-                System.out.println(
-                        "Please try again.");
-            }
+            System.out.println(
+                    "Loan update failed!");
         }
     }
 
 
-    // ================= DELETE LOAN =================
-
+    // DELETE LOAN
     private void deleteLoan(Scanner scanner) {
 
-        while (true) {
+        int loanId =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Loan ID: ");
 
-            int loanId =
-                    InputUtil.readInt(
-                            scanner,
-                            "Enter Loan ID: ");
+        try {
 
-            try {
+            loanService.deleteLoan(loanId);
 
-                loanService.getLoanById(
-                        loanId);
+            System.out.println(
+                    "Loan deleted successfully!");
 
-                String answer =
-                        InputUtil.readString(
-                                scanner,
-                                "Delete? yes/no: ");
+        } catch (RuntimeException e) {
 
-                if (answer.equalsIgnoreCase("yes")) {
-
-                    loanService.deleteLoan(
-                            loanId);
-
-                    System.out.println();
-                    System.out.println(
-                            "Loan deleted successfully!");
-
-                } else {
-
-                    System.out.println();
-                    System.out.println(
-                            "Delete cancelled.");
-                }
-
-                break;
-
-            } catch (NotFoundException e) {
-
-                System.out.println();
-                System.out.println(
-                        "Loan not found!");
-
-                System.out.println(
-                        "Please enter Loan ID again.");
-            }
+            System.out.println();
+            System.out.println(
+                    "Loan cannot be deleted because repayment records exist for this loan.");
         }
-    }
-
-
-    // ================= MAIN =================
-
-    public static void main(String[] args) {
-
-        LoanController controller =
-                new LoanController();
-
-        controller.loanMenu();
     }
 }

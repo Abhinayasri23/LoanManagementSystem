@@ -1,7 +1,10 @@
 package com.loanmanagement.service;
 
+import com.loanmanagement.model.User;
+
 public interface AuthService {
-    boolean login(String username, String password);
+
+    User login(String username, String password);
 
     void logout(int userId);
 }

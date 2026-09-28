@@ -1,5 +1,6 @@
 package com.loanmanagement.controller;
 
+import com.loanmanagement.model.User;
 import com.loanmanagement.service.AuthService;
 import com.loanmanagement.service.impl.AuthServiceImpl;
 import com.loanmanagement.util.InputUtil;
@@ -17,7 +18,10 @@ public class AuthController {
     private AuthService authService =
             new AuthServiceImpl();
 
-    public void login() {
+
+    // ================= LOGIN =================
+
+    public User login() {
 
         Scanner scanner = new Scanner(System.in);
 
@@ -38,21 +42,32 @@ public class AuthController {
 
             try {
 
-                boolean result =
+                User user =
                         authService.login(
                                 username,
                                 password);
 
-                if (result) {
+
+                if (user != null) {
 
                     System.out.println();
                     System.out.println(
                             "Login successful!");
 
-                    logger.info(
-                            "Login successful!");
+                    System.out.println(
+                            "Welcome, "
+                                    + user.getUsername()
+                                    + "!");
 
-                    break;
+                    System.out.println(
+                            "Role: "
+                                    + user.getRole());
+
+                    logger.info(
+                            "Login successful for user: {}",
+                            username);
+
+                    return user;
 
                 } else {
 
@@ -64,8 +79,10 @@ public class AuthController {
                             "Please enter again.");
 
                     logger.warn(
-                            "Login failed!");
+                            "Login failed for username: {}",
+                            username);
                 }
+
 
             } catch (RuntimeException e) {
 
@@ -79,47 +96,37 @@ public class AuthController {
         }
     }
 
-    public void logout() {
 
-        Scanner scanner = new Scanner(System.in);
+    // ================= LOGOUT =================
 
-        while (true) {
+    public void logout(User user) {
 
-            int userId =
-                    InputUtil.readInt(
-                            scanner,
-                            "Enter User ID: ");
-
-            try {
-
-                authService.logout(userId);
-
-                System.out.println();
-                System.out.println(
-                        "Logout successful!");
-
-                logger.info(
-                        "Logout completed!");
-
-                break;
-
-            } catch (RuntimeException e) {
-
-                System.out.println();
-                System.out.println(
-                        "Logout failed!");
-
-                System.out.println(
-                        "Please enter User ID again.");
-            }
+        if (user == null) {
+            return;
         }
-    }
 
-    public static void main(String[] args) {
+        try {
 
-        AuthController authController =
-                new AuthController();
+            authService.logout(
+                    user.getUserId());
 
-        authController.login();
+            System.out.println();
+            System.out.println(
+                    "Logout successful!");
+
+            logger.info(
+                    "Logout completed for user: {}",
+                    user.getUsername());
+
+
+        } catch (RuntimeException e) {
+
+            System.out.println();
+            System.out.println(
+                    "Logout failed!");
+
+            System.out.println(
+                    "Please try again.");
+        }
     }
 }

@@ -13,6 +13,8 @@ public class LoanApplicationController {
     private ApplicationService applicationService =
             new ApplicationServiceImpl();
 
+
+    // CUSTOMER MENU
     public void applicationMenu() {
 
         Scanner scanner = new Scanner(System.in);
@@ -58,263 +60,296 @@ public class LoanApplicationController {
     }
 
 
-    // ADD
-
+    // ADD APPLICATION
     private void addApplication(Scanner scanner) {
 
         LoanApplication application =
                 new LoanApplication();
 
         application.setCustomerId(
-                InputUtil.readInt(scanner,
-                        "Enter Customer ID: "));
+                InputUtil.readInt(scanner, "Enter Customer ID: "));
 
         application.setLoanTypeId(
-                InputUtil.readInt(scanner,
-                        "Enter Loan Type ID: "));
+                InputUtil.readInt(scanner, "Enter Loan Type ID: "));
 
         application.setRequestedAmount(
-                InputUtil.readDouble(scanner,
-                        "Enter Requested Amount: "));
+                InputUtil.readDouble(scanner, "Enter Amount: "));
 
         application.setTenureMonths(
-                InputUtil.readInt(scanner,
-                        "Enter Tenure (months): "));
+                InputUtil.readInt(scanner, "Enter Tenure: "));
 
         application.setPurpose(
-                InputUtil.readString(scanner,
-                        "Enter Purpose: "));
+                InputUtil.readString(scanner, "Enter Purpose: "));
 
         application.setRemarks(
-                InputUtil.readString(scanner,
-                        "Enter Remarks: "));
+                InputUtil.readString(scanner, "Enter Remarks: "));
+
+        application.setStatus("PENDING");
 
         try {
 
             applicationService.addApplication(application);
 
             System.out.println(
-                    "Loan application added successfully!");
+                    "Application submitted successfully!");
+
+            System.out.println(
+                    "Status: PENDING");
 
         } catch (RuntimeException e) {
 
             System.out.println(
-                    "Invalid application details!");
-            System.out.println(
-                    "Please try again.");
+                    "Application failed!");
+
         }
     }
 
 
-    // VIEW
-
+    // VIEW APPLICATION
     private void getApplication(Scanner scanner) {
 
-        while (true) {
+        int id =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Application ID: ");
 
-            int id =
-                    InputUtil.readInt(scanner,
-                            "Enter Application ID: ");
+        try {
 
-            try {
+            LoanApplication application =
+                    applicationService.getApplicationById(id);
 
-                LoanApplication application =
-                        applicationService
-                                .getApplicationById(id);
+            System.out.println();
+            System.out.println("Application ID : "
+                    + application.getApplicationId());
 
-                System.out.println();
-                System.out.println("===== APPLICATION DETAILS =====");
-                System.out.println(
-                        "Application ID : "
-                                + application.getApplicationId());
-                System.out.println(
-                        "Customer ID    : "
-                                + application.getCustomerId());
-                System.out.println(
-                        "Loan Type ID   : "
-                                + application.getLoanTypeId());
-                System.out.println(
-                        "Amount         : "
-                                + application.getRequestedAmount());
-                System.out.println(
-                        "Tenure         : "
-                                + application.getTenureMonths());
-                System.out.println(
-                        "Purpose        : "
-                                + application.getPurpose());
-                System.out.println(
-                        "Status         : "
-                                + application.getStatus());
-                System.out.println(
-                        "Remarks        : "
-                                + application.getRemarks());
+            System.out.println("Customer ID    : "
+                    + application.getCustomerId());
 
-                break;
+            System.out.println("Loan Type ID   : "
+                    + application.getLoanTypeId());
 
-            } catch (NotFoundException e) {
+            System.out.println("Amount         : "
+                    + application.getRequestedAmount());
 
-                System.out.println(
-                        "Application not found!");
-                System.out.println(
-                        "Please enter a valid Application ID.");
-            }
+            System.out.println("Tenure         : "
+                    + application.getTenureMonths());
+
+            System.out.println("Purpose        : "
+                    + application.getPurpose());
+
+            System.out.println("Status         : "
+                    + application.getStatus());
+
+            System.out.println("Remarks        : "
+                    + application.getRemarks());
+
+        } catch (NotFoundException e) {
+
+            System.out.println(
+                    "Application not found!");
         }
     }
 
 
-    // UPDATE
-
+    // UPDATE APPLICATION
     private void updateApplication(Scanner scanner) {
 
-        while (true) {
+        int id =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Application ID: ");
 
-            int id =
-                    InputUtil.readInt(scanner,
-                            "Enter Application ID: ");
+        try {
 
-            try {
+            LoanApplication application =
+                    applicationService.getApplicationById(id);
 
-                LoanApplication application =
-                        applicationService
-                                .getApplicationById(id);
+            System.out.println("1. Customer ID");
+            System.out.println("2. Loan Type ID");
+            System.out.println("3. Amount");
+            System.out.println("4. Tenure");
+            System.out.println("5. Purpose");
+            System.out.println("6. Remarks");
 
-                System.out.println();
-                System.out.println("1. Customer ID");
-                System.out.println("2. Loan Type ID");
-                System.out.println("3. Requested Amount");
-                System.out.println("4. Tenure");
-                System.out.println("5. Purpose");
-                System.out.println("6. Status");
-                System.out.println("7. Remarks");
+            int choice =
+                    InputUtil.readInt(
+                            scanner,
+                            "Enter choice: ");
 
-                int choice =
-                        InputUtil.readInt(scanner,
-                                "Enter field choice: ");
+            switch (choice) {
 
-                switch (choice) {
+                case 1:
+                    application.setCustomerId(
+                            InputUtil.readInt(
+                                    scanner,
+                                    "New Customer ID: "));
+                    break;
 
-                    case 1:
-                        application.setCustomerId(
-                                InputUtil.readInt(scanner,
-                                        "New Customer ID: "));
-                        break;
+                case 2:
+                    application.setLoanTypeId(
+                            InputUtil.readInt(
+                                    scanner,
+                                    "New Loan Type ID: "));
+                    break;
 
-                    case 2:
-                        application.setLoanTypeId(
-                                InputUtil.readInt(scanner,
-                                        "New Loan Type ID: "));
-                        break;
+                case 3:
+                    application.setRequestedAmount(
+                            InputUtil.readDouble(
+                                    scanner,
+                                    "New Amount: "));
+                    break;
 
-                    case 3:
-                        application.setRequestedAmount(
-                                InputUtil.readDouble(scanner,
-                                        "New Amount: "));
-                        break;
+                case 4:
+                    application.setTenureMonths(
+                            InputUtil.readInt(
+                                    scanner,
+                                    "New Tenure: "));
+                    break;
 
-                    case 4:
-                        application.setTenureMonths(
-                                InputUtil.readInt(scanner,
-                                        "New Tenure: "));
-                        break;
+                case 5:
+                    application.setPurpose(
+                            InputUtil.readString(
+                                    scanner,
+                                    "New Purpose: "));
+                    break;
 
-                    case 5:
-                        application.setPurpose(
-                                InputUtil.readString(scanner,
-                                        "New Purpose: "));
-                        break;
+                case 6:
+                    application.setRemarks(
+                            InputUtil.readString(
+                                    scanner,
+                                    "New Remarks: "));
+                    break;
 
-                    case 6:
-                        application.setStatus(
-                                InputUtil.readString(scanner,
-                                        "New Status: "));
-                        break;
-
-                    case 7:
-                        application.setRemarks(
-                                InputUtil.readString(scanner,
-                                        "New Remarks: "));
-                        break;
-
-                    default:
-                        System.out.println("Invalid choice!");
-                        return;
-                }
-
-                applicationService.updateApplication(application);
-
-                System.out.println(
-                        "Application updated successfully!");
-
-                break;
-
-            } catch (NotFoundException e) {
-
-                System.out.println(
-                        "Application not found!");
-                System.out.println(
-                        "Please enter a valid Application ID.");
-            } catch (RuntimeException e) {
-
-                System.out.println(
-                        "Update failed!");
-                System.out.println(
-                        "Please check the entered values.");
-                break;
+                default:
+                    System.out.println("Invalid choice!");
+                    return;
             }
+
+            applicationService.updateApplication(application);
+
+            System.out.println(
+                    "Application updated successfully!");
+
+        } catch (RuntimeException e) {
+
+            System.out.println(
+                    "Update failed!");
         }
     }
 
 
-    // DELETE
-
+    // DELETE APPLICATION
     private void deleteApplication(Scanner scanner) {
 
+        int id =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Application ID: ");
+
+        try {
+
+            applicationService.getApplicationById(id);
+
+            String answer =
+                    InputUtil.readString(
+                            scanner,
+                            "Delete? yes/no: ");
+
+            if (answer.equalsIgnoreCase("yes")) {
+
+                applicationService.deleteApplication(id);
+
+                System.out.println(
+                        "Application deleted successfully!");
+
+            } else {
+
+                System.out.println(
+                        "Delete cancelled!");
+            }
+
+        } catch (NotFoundException e) {
+
+            System.out.println(
+                    "Application not found!");
+        }
+    }
+
+
+    // LOAN OFFICER MENU
+    public void officerApplicationMenu() {
+
+        Scanner scanner = new Scanner(System.in);
+
         while (true) {
 
-            int id =
-                    InputUtil.readInt(scanner,
-                            "Enter Application ID: ");
+            System.out.println();
+            System.out.println("===== LOAN OFFICER =====");
+            System.out.println("1. View Application");
+            System.out.println("2. Approve Application");
+            System.out.println("3. Reject Application");
+            System.out.println("4. Back");
 
-            try {
+            int choice =
+                    InputUtil.readInt(scanner, "Enter choice: ");
 
-                applicationService
-                        .getApplicationById(id);
+            switch (choice) {
 
-                String answer =
-                        InputUtil.readString(scanner,
-                                "Delete? yes/no: ");
+                case 1:
+                    getApplication(scanner);
+                    break;
 
-                if (answer.equalsIgnoreCase("yes")) {
+                case 2:
+                    changeStatus(scanner, "APPROVED");
+                    break;
 
-                    applicationService
-                            .deleteApplication(id);
+                case 3:
+                    changeStatus(scanner, "REJECTED");
+                    break;
 
-                    System.out.println(
-                            "Application deleted successfully!");
-                } else {
+                case 4:
+                    return;
 
-                    System.out.println(
-                            "Delete cancelled.");
-                }
-
-                break;
-
-            } catch (NotFoundException e) {
-
-                System.out.println(
-                        "Application not found!");
-                System.out.println(
-                        "Please enter a valid Application ID.");
+                default:
+                    System.out.println("Invalid choice!");
             }
         }
     }
 
 
-    public static void main(String[] args) {
+    // CHANGE APPLICATION STATUS
+    private void changeStatus(
+            Scanner scanner,
+            String status) {
 
-        LoanApplicationController controller =
-                new LoanApplicationController();
+        int id =
+                InputUtil.readInt(
+                        scanner,
+                        "Enter Application ID: ");
 
-        controller.applicationMenu();
+        try {
+
+            if (status.equals("APPROVED")) {
+
+                applicationService.approveApplication(id);
+
+                System.out.println(
+                        "Application approved!");
+
+            } else {
+
+                applicationService.rejectApplication(id);
+
+                System.out.println(
+                        "Application rejected!");
+            }
+
+        } catch (RuntimeException e) {
+
+            System.out.println(
+                    "Operation failed!");
+            System.out.println(
+                    e.getMessage());
+        }
     }
 }
